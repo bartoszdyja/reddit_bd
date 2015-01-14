@@ -1,11 +1,14 @@
+include ActionView::Helpers::DateHelper 
+
 class ArticlesController < ApplicationController
   before_action :set_article, only: [:show, :edit, :update, :destroy]
 
   # GET /articles
   # GET /articles.json
   def index
-    @articles = Article.all
+    @articles = Article.order("created_at DESC").all
   end
+
 
   # GET /articles/1
   # GET /articles/1.json
@@ -61,12 +64,20 @@ class ArticlesController < ApplicationController
     end
   end
 
+helper_method :get_time
+
+  def get_time(article)
+    #Time.diff(article.created_at, Time.now)
+    time_ago_in_words(Time.at(article.created_at))        
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_article
       @article = Article.find(params[:id])
     end
 
+   
     # Never trust parameters from the scary internet, only allow the white list through.
     def article_params
       params.require(:article).permit(:title, :content)
